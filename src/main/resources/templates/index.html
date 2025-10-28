@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Document Version Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 420px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        select, input[type="text"], button {
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .divider {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Document Version Tracker</h1>
+
+    <p th:if="${error}" th:text="${error}" class="error"></p>
+
+    <!-- Existing User -->
+    <form th:action="@{/user/select}" method="post">
+        <label for="user">Choose existing user</label>
+        <select name="userId" id="user" required>
+            <option value="" disabled selected>Select user</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.username}"></option>
+        </select>
+        <button type="submit">Select</button>
+    </form>
+
+    <div class="divider"></div>
+
+    <!-- New User -->
+    <form th:action="@{/create-user}" method="post">
+        <label for="username">Create new user</label>
+        <input type="text" id="username" name="username" placeholder="Enter username" required>
+        <button type="submit">Create</button>
+    </form>
+
+    <div class="divider"></div>
+
+    <!-- Go to Documents if active user -->
+    <div th:if="${activeUser != null}">
+        <p>Logged in as <strong th:text="${activeUser.username}"></strong></p>
+        <form th:action="@{/documents}" method="get">
+            <button type="submit">Go to Documents</button>
+        </form>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" style="background-color: #dc3545;">Logout</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

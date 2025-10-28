@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Document Details</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 750px;
+            margin: 30px auto;
+            background: white;
+            padding: 25px 35px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            font-size: 1.6rem;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        .meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            font-family: monospace;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            resize: vertical;
+            background: #fafafa;
+        }
+        .actions {
+            margin-top: 15px;
+        }
+        .actions button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .actions button:hover {
+            background: #0056b3;
+        }
+        .versions {
+            margin-top: 35px;
+        }
+        .version-item {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: #fdfdfd;
+        }
+        .summary {
+            font-weight: bold;
+        }
+        .rollback {
+            background: #28a745;
+        }
+        .rollback:hover {
+            background: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="${document.title}">Document Title</h1>
+
+    <div class="meta">
+        <p><b>Created by:</b> <span th:text="${document.createdBy.username}">User</span></p>
+        <p><b>Active User:</b> <span th:text="${activeUser.username}">User</span></p>
+    </div>
+
+    <h3>Current Content</h3>
+    <form th:action="@{'/documents/' + ${document.id} + '/edit'}" method="post">
+        <textarea name="content" th:text="${document.content}"></textarea>
+        <input type="text" name="summary" placeholder="Edit summary (optional)">
+        <div class="actions">
+            <button type="submit">Save Changes</button>
+        </div>
+    </form>
+
+    <div class="versions">
+        <h3>Version History</h3>
+        <div th:each="ver : ${versions}" class="version-item">
+            <div class="summary" th:text="'Version ' + ${ver.versionNumber} + ': ' + ${ver.summary}"></div>
+            <div>
+                <span th:text="'By ' + ${ver.createdBy.username}"></span> |
+                <span th:text="${#temporals.format(ver.createdAt, 'dd MMM yyyy HH:mm')}"></span>
+            </div>
+            <form th:action="@{'/documents/' + ${document.id} + '/rollback'}" method="post">
+                <input type="hidden" name="versionNumber" th:value="${ver.versionNumber}">
+                <button type="submit" class="rollback">Rollback</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="fragments/header :: head"></th:block>
+<head><title>Users</title></head>
+<body>
+<div class="container">
+    <h3>Users</h3>
+    <table class="table table-striped">
+        <thead><tr><th>ID</th><th>Username</th><th>Action</th></tr></thead>
+        <tbody>
+        <tr th:each="u : ${users}">
+            <td th:text="${u.id}">1</td>
+            <td th:text="${u.username}">user</td>
+            <td>
+                <form th:action="@{/users/select}" method="post" style="display:inline;">
+                    <input type="hidden" name="userId" th:value="${u.id}" />
+                    <button class="btn btn-sm btn-primary">Select</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <a href="/" class="btn btn-secondary">Back</a>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

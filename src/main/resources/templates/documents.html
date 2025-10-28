@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>📄 Document Version Tracker</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #2d3748;
+            color: #fff;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        main {
+            padding: 30px;
+            max-width: 900px;
+            margin: auto;
+        }
+        .user-info {
+            background: #edf2f7;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .doc-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        .doc-card h2 {
+            margin: 0;
+            color: #2d3748;
+        }
+        .actions a, .actions button {
+            display: inline-block;
+            margin-right: 8px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            cursor: pointer;
+            background-color: #3182ce;
+        }
+        .actions a:hover, .actions button:hover {
+            background-color: #2b6cb0;
+        }
+        .btn-new {
+            background-color: #48bb78;
+        }
+        .btn-new:hover {
+            background-color: #38a169;
+        }
+        .message {
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        .success { background-color: #c6f6d5; color: #22543d; }
+        .error { background-color: #fed7d7; color: #742a2a; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>📄 Document Version Tracker</h1>
+    <div th:if="${activeUser != null}">
+        👤 Logged in as: <strong th:text="${activeUser.username}"></strong>
+    </div>
+</header>
+
+<main>
+    <!-- Flash Messages -->
+    <div th:if="${success}" class="message success" th:text="${success}"></div>
+    <div th:if="${error}" class="message error" th:text="${error}"></div>
+
+    <!-- User Info -->
+    <div class="user-info" th:if="${activeUser != null}">
+        <p>Welcome, <b th:text="${activeUser.username}"></b>!</p>
+        <a th:href="@{/documents/new}" class="btn-new">+ Create New Document</a>
+    </div>
+
+    <!-- Document List -->
+    <div th:if="${#lists.isEmpty(documents)}">
+        <p>No documents available. Create one to get started!</p>
+    </div>
+
+    <div th:each="doc : ${documents}" class="doc-card">
+        <h2 th:text="${doc.title}"></h2>
+        <p><b>Author:</b> <span th:text="${doc.createdBy != null ? doc.createdBy.username : 'Unknown'}"></span></p>
+        <p><b>Created At:</b> <span th:text="${#temporals.format(doc.createdAt, 'yyyy-MM-dd HH:mm')}"></span></p>
+
+        <div class="actions">
+            <a th:href="@{'/documents/' + ${doc.id}}">View Details</a>
+            <a th:href="@{'/documents/' + ${doc.id} + '/edit'}">Edit</a>
+        </div>
+    </div>
+</main>
+</body>
+</html>
